@@ -29,8 +29,8 @@ app.secret_key = 'your_secret_key_change_this_12345'
 # ======================================
 # Add your Razorpay API keys here
 # Get these from: https://dashboard.razorpay.com/app/keys
-RAZORPAY_KEY_ID = 'rzp_test_SaGwdxC2nNrJHg'  # Replace with your API key
-RAZORPAY_KEY_SECRET = 'E0wo3EELRQ6U64QVFx0eL8T6'  # Replace with your API secret
+RAZORPAY_KEY_ID = ''  # Replace with your API key
+RAZORPAY_KEY_SECRET = ''  # Replace with your API secret
 
 # Initialize Razorpay client
 razorpay_client = razorpay.Client(auth=(RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET))
