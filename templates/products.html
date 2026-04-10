@@ -1,0 +1,235 @@
+{% extends "base.html" %}
+
+{% block title %}Products - Our Store{% endblock %}
+
+{% block content %}
+<div class="products-container">
+    <h1>Our Products</h1>
+    <p class="subtitle">Browse and shop our collection</p>
+
+    {% if products %}
+        <div class="products-grid">
+            {% for product in products %}
+                <div class="product-card">
+                    <div class="product-image">
+                        {% if product.image_url %}
+                            <img src="/static/uploads/products/{{ product.image_url }}" alt="{{ product.name }}" class="product-img">
+                        {% else %}
+                            <div class="image-placeholder">📦</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="product-info">
+                        <h3>{{ product.name }}</h3>
+                        <p class="product-description">{{ product.description[:60] }}{% if product.description and product.description|length > 60 %}...{% endif %}</p>
+                        
+                        <div class="product-price">₹{{ "%.2f"|format(product.price) }}</div>
+                        
+                        <div class="product-stock">
+                            Stock: <strong>{{ product.stock }}</strong> available
+                        </div>
+                        
+                        <form method="POST" action="{{ url_for('add_to_cart', product_id=product.id) }}" class="add-to-cart-form">
+                            <div class="quantity-input">
+                                <label for="quantity-{{ product.id }}">Qty:</label>
+                                <input 
+                                    type="number" 
+                                    id="quantity-{{ product.id }}" 
+                                    name="quantity" 
+                                    min="1" 
+                                    max="{{ product.stock }}"
+                                    value="1"
+                                >
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-add-cart">Add to Cart</button>
+                        </form>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <p>No products available at the moment.</p>
+        </div>
+    {% endif %}
+
+    {% if session.get('user_id') %}
+        <div class="cart-link-section">
+            <a href="{{ url_for('view_cart') }}" class="btn btn-secondary">View Shopping Cart</a>
+        </div>
+    {% else %}
+        <div class="login-prompt">
+            <p><a href="{{ url_for('login') }}">Login</a> to add items to your cart</p>
+        </div>
+    {% endif %}
+</div>
+
+<style>
+.products-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 2rem;
+}
+
+.products-container h1 {
+    color: #333;
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.subtitle {
+    color: #666;
+    margin-bottom: 2rem;
+    font-size: 1.1rem;
+}
+
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+.product-card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.product-image {
+    width: 100%;
+    height: 200px;
+    background: linear-gradient(135deg, #f5f5f5, #e0e0e0);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.image-placeholder {
+    font-size: 3rem;
+}
+
+.product-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.product-info {
+    padding: 1.5rem;
+}
+
+.product-info h3 {
+    color: #333;
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+}
+
+.product-description {
+    color: #666;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    line-height: 1.4;
+}
+
+.product-price {
+    font-size: 1.5rem;
+    color: #4CAF50;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.product-stock {
+    color: #999;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+}
+
+.add-to-cart-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.quantity-input {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.quantity-input label {
+    font-weight: 600;
+    color: #333;
+}
+
+.quantity-input input {
+    padding: 0.5rem;
+    border: 2px solid #ddd;
+    border-radius: 4px;
+    width: 70px;
+    text-align: center;
+}
+
+.btn-add-cart {
+    width: 100%;
+    padding: 0.75rem;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 3rem;
+    background: white;
+    border-radius: 8px;
+    color: #666;
+    margin-bottom: 2rem;
+}
+
+.cart-link-section {
+    text-align: center;
+    padding: 2rem;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.login-prompt {
+    text-align: center;
+    padding: 2rem;
+    background: #fff3cd;
+    border-radius: 8px;
+    color: #856404;
+}
+
+.login-prompt a {
+    color: #856404;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.login-prompt a:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+    .products-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 1rem;
+    }
+
+    .product-info {
+        padding: 1rem;
+    }
+
+    .quantity-input input {
+        width: 60px;
+    }
+}
+</style>
+{% endblock %}

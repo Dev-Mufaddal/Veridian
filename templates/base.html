@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Flask Auth{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="/" class="logo-link">
+                    <img src="{{ url_for('static', filename='images/AuthOra_logo.png') }}" alt="AuthOra"
+                        class="logo-img">
+                    <h2 class="logo-text">AuthOra</h2>
+                </a>
+            </div>
+            <ul class="nav-menu">
+                <!-- Show to all users -->
+                <li><a href="{{ url_for('products') }}" class="nav-link">Shop</a></li>
+
+                {% if session.get('user_id') %}
+                <!-- Show these links only if user is logged in -->
+                <li><a href="{{ url_for('view_cart') }}" class="nav-link">Cart 🛒</a></li>
+
+                <!-- Admin only links -->
+                {% if session.get('role') == 'admin' %}
+                <li><a href="{{ url_for('admin_dashboard') }}" class="nav-link admin-link">Admin</a></li>
+                {% endif %}
+
+                <li><a href="{{ url_for('dashboard') }}" class="nav-link">Dashboard</a></li>
+                <li><a href="{{ url_for('order_history') }}" class="nav-link">Orders</a></li>
+                <li><a href="{{ url_for('logout') }}" class="nav-link logout-btn">Logout</a></li>
+                {% else %}
+                <!-- Show these links if user is not logged in -->
+                <li><a href="{{ url_for('login') }}" class="nav-link">Login</a></li>
+                <li><a href="{{ url_for('register') }}" class="nav-link register-btn">Register</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2026 Flask Auth Project. All rights reserved.</p>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+
+</html>

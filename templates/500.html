@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}Server Error - Flask Auth{% endblock %}
+
+{% block content %}
+<div class="error-container">
+    <div class="error-box">
+        <h1 class="error-code">500</h1>
+        <h2>Server Error</h2>
+        <p>Something went wrong on our end. Please try again later.</p>
+        
+        <div class="error-actions">
+            <a href="{{ url_for('home') }}" class="btn btn-primary">Go Home</a>
+            <a href="{{ url_for('login') }}" class="btn btn-secondary">Go to Login</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,938 @@
+{% extends "base.html" %}
+
+{% block title %}Checkout{% endblock %}
+
+{% block content %}
+<div class="checkout-container">
+    <h1>Complete Your Order</h1>
+
+    {% if error %}
+    <div class="alert alert-error">
+        <span class="alert-icon">✕</span>
+        {{ error }}
+    </div>
+    {% endif %}
+
+    {% if cart_items %}
+    <div class="checkout-wrapper">
+        <!-- Left Side: Order Review & Shipping -->
+        <div class="checkout-left">
+            <!-- Order Review -->
+            <div class="checkout-section">
+                <h2>📦 Order Review</h2>
+
+                <div class="orders-list">
+                    {% for item in cart_items %}
+                    <div class="order-item">
+                        <div class="item-info">
+                            <h4>{{ item.name }}</h4>
+                            <p class="item-price">₹{{ "%.2f"|format(item.price) }} × {{ item.quantity }}</p>
+                        </div>
+                        <div class="item-total">₹{{ "%.2f"|format(item.quantity * item.price) }}</div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Shipping Information -->
+            <div class="checkout-section">
+                <h2>🚚 Shipping Information</h2>
+
+                <form id="shippingForm" class="checkout-form">
+                    <div class="form-group">
+                        <label>Full Name *</label>
+                        <input type="text" id="fullName" name="fullName" placeholder="John Doe" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Email Address *</label>
+                        <input type="email" id="email" name="email" placeholder="john@example.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Street Address *</label>
+                        <input type="text" id="address" name="address" placeholder="123 Main Street" required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>City *</label>
+                            <input type="text" id="city" name="city" placeholder="New York" required>
+                        </div>
+                        <div class="form-group">
+                            <label>State/Province *</label>
+                            <input type="text" id="state" name="state" placeholder="NY" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>ZIP Code *</label>
+                            <input type="text" id="zipcode" name="zipcode" placeholder="10001" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Country *</label>
+                            <input type="text" id="country" name="country" placeholder="United States" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Phone Number *</label>
+                        <input type="tel" id="phone" name="phone" placeholder="+1 (555) 123-4567" required>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Right Side: Order Summary & Payment -->
+        <div class="checkout-right">
+            <div class="summary-card">
+                <h3>💳 Order Summary</h3>
+
+                <div class="summary-details">
+                    {% for item in cart_items %}
+                    <div class="summary-item">
+                        <span class="item-name">{{ item.name }} <strong>×{{ item.quantity }}</strong></span>
+                        <span class="item-amount">₹{{ "%.2f"|format(item.quantity * item.price) }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div class="summary-divider"></div>
+
+                <div class="summary-row">
+                    <span>Subtotal:</span>
+                    <span>₹{{ "%.2f"|format(total_price) }}</span>
+                </div>
+
+                <div class="summary-row">
+                    <span>Shipping:</span>
+                    <span class="free-text">FREE</span>
+                </div>
+
+                <div class="summary-row">
+                    <span>Tax:</span>
+                    <span>₹0.00</span>
+                </div>
+
+                <div class="summary-total">
+                    <span>Total Amount:</span>
+                    <span id="totalAmount">₹{{ "%.2f"|format(total_price) }}</span>
+                </div>
+
+                <!-- Payment Methods Available -->
+                <div class="payment-methods-section">
+                    <h4 style="font-size: 0.85rem; color: #333; margin-bottom: 0.75rem;">✓ Multiple Payment Options
+                        Available:</h4>
+                    <div class="payment-methods-grid">
+                        <div class="payment-method-item">
+                            <span class="method-icon">💳</span>
+                            <span class="method-label">Cards</span>
+                        </div>
+                        <div class="payment-method-item">
+                            <span class="method-icon">📱</span>
+                            <span class="method-label">UPI</span>
+                        </div>
+                        <div class="payment-method-item">
+                            <span class="method-icon">👛</span>
+                            <span class="method-label">Wallets</span>
+                        </div>
+                        <div class="payment-method-item">
+                            <span class="method-icon">🏦</span>
+                            <span class="method-label">Netbanking</span>
+                        </div>
+                        <div class="payment-method-item">
+                            <span class="method-icon">💸</span>
+                            <span class="method-label">PayLater</span>
+                        </div>
+                        <div class="payment-method-item">
+                            <span class="method-icon">📊</span>
+                            <span class="method-label">EMI</span>
+                        </div>
+                    </div>
+                    <p style="font-size: 0.75rem; color: #888; margin-top: 0.5rem; text-align: center;">Includes: JIO
+                        Money, Apple Pay, Google Pay, Amazon Pay, Paytm, PhonePe & 50+ methods</p>
+                </div>
+
+                <!-- Razorpay Payment Button -->
+                <button id="razorpayBtn" class="btn btn-primary full-width pay-btn">
+                    🔒 Pay Securely - ₹{{ "%.2f"|format(total_price) }}
+                </button>
+
+                <a href="{{ url_for('view_cart') }}" class="btn btn-secondary full-width">← Back to Cart</a>
+            </div>
+
+            <!-- Security Info -->
+            <div class="security-info">
+                <p>🔒 <strong>Secure Payment</strong></p>
+                <p style="font-size: 0.85rem; color: #666; margin-top: 0.5rem;">
+                    Your payment information is encrypted and secure. We use Razorpay's industry-leading security.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Info Box -->
+    <div class="info-box">
+        <h3>ℹ️ Order Information</h3>
+        <ul>
+            <li>✓ Your order will be confirmed after successful payment</li>
+            <li>✓ Shipping is FREE for all orders worldwide</li>
+            <li>✓ You will receive an order confirmation email immediately</li>
+            <li>✓ Track your order in your account dashboard</li>
+            <li>✓ Secure payment powered by Razorpay</li>
+        </ul>
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <p>🛒 Your cart is empty</p>
+        <a href="{{ url_for('products') }}" class="btn btn-primary">Continue Shopping</a>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+    .checkout-container {
+        max-width: 1400px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+    }
+
+    .checkout-container>h1 {
+        color: #333;
+        font-size: 2rem;
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+
+    .checkout-wrapper {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .checkout-left {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    .checkout-right {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    /* Section Styling */
+    .checkout-section {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .checkout-section h2 {
+        color: #333;
+        font-size: 1.2rem;
+        margin-bottom: 1.5rem;
+        border-bottom: 2px solid #f0f0f0;
+        padding-bottom: 1rem;
+    }
+
+    /* Order Items List */
+    .orders-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .order-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+        background: #f9f9f9;
+        border-radius: 6px;
+        padding: 1rem;
+    }
+
+    .item-info {
+        flex: 1;
+    }
+
+    .item-info h4 {
+        color: #333;
+        margin: 0;
+        font-size: 0.95rem;
+        margin-bottom: 0.3rem;
+    }
+
+    .item-price {
+        color: #666;
+        font-size: 0.85rem;
+        margin: 0;
+    }
+
+    .item-total {
+        font-weight: 700;
+        color: #4CAF50;
+        font-size: 1.1rem;
+        min-width: 100px;
+        text-align: right;
+    }
+
+    /* Form Styling */
+    .checkout-form {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-group label {
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 0.4rem;
+        font-size: 0.9rem;
+    }
+
+    .form-group input {
+        padding: 0.8rem;
+        border: 2px solid #ddd;
+        border-radius: 6px;
+        font-size: 0.95rem;
+        font-family: inherit;
+        transition: border-color 0.3s;
+    }
+
+    .form-group input:focus {
+        outline: none;
+        border-color: #4CAF50;
+        box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+
+    /* Summary Card Styling */
+    .summary-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        position: sticky;
+        top: 100px;
+    }
+
+    .summary-card h3 {
+        color: #333;
+        font-size: 1.1rem;
+        margin: 0 0 1rem 0;
+        border-bottom: 2px solid #f0f0f0;
+        padding-bottom: 1rem;
+    }
+
+    .summary-details {
+        margin-bottom: 1rem;
+        max-height: 250px;
+        overflow-y: auto;
+    }
+
+    .summary-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.7rem 0;
+        font-size: 0.9rem;
+        color: #666;
+        border-bottom: 1px solid #eee;
+    }
+
+    .summary-item .item-name {
+        color: #333;
+    }
+
+    .summary-item .item-amount {
+        font-weight: 600;
+        color: #333;
+    }
+
+    .summary-divider {
+        height: 2px;
+        background: #f0f0f0;
+        margin: 1rem 0;
+    }
+
+    .summary-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.7rem 0;
+        color: #666;
+        font-size: 0.95rem;
+    }
+
+    .summary-row .free-text {
+        color: #4CAF50;
+        font-weight: 600;
+    }
+
+    .summary-total {
+        display: flex;
+        justify-content: space-between;
+        padding: 1rem 0;
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #333;
+        margin: 1rem 0;
+        border-top: 2px solid #f0f0f0;
+        border-bottom: 2px solid #f0f0f0;
+    }
+
+    .summary-total span:last-child {
+        color: #4CAF50;
+    }
+
+    /* Button Styling */
+    .btn {
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.95rem;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+
+    .btn-primary {
+        background: #4CAF50;
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background: #45a049;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+    }
+
+    .btn-secondary {
+        background: #f0f0f0;
+        color: #333;
+        margin-top: 0.5rem;
+    }
+
+    .btn-secondary:hover {
+        background: #e0e0e0;
+    }
+
+    .full-width {
+        width: 100%;
+        display: block;
+        text-align: center;
+        margin-bottom: 0.5rem;
+    }
+
+    .pay-btn {
+        font-size: 1rem;
+        padding: 1rem;
+        background: linear-gradient(135deg, #4CAF50, #45a049);
+    }
+
+    .pay-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+    }
+
+    /* Payment Methods Section */
+    .payment-methods-section {
+        background: #f9f9f9;
+        padding: 1rem;
+        border-radius: 6px;
+        margin-bottom: 1rem;
+        border: 1px solid #e0e0e0;
+    }
+
+    .payment-methods-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.75rem;
+    }
+
+    .payment-method-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 0.75rem;
+        background: white;
+        border-radius: 6px;
+        border: 2px solid #e0e0e0;
+        text-align: center;
+        transition: all 0.3s;
+    }
+
+    .payment-method-item:hover {
+        border-color: #4CAF50;
+        background: #f0f8f0;
+        box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+    }
+
+    .method-icon {
+        font-size: 1.5rem;
+        margin-bottom: 0.3rem;
+    }
+
+    .method-label {
+        font-size: 0.75rem;
+        color: #666;
+        font-weight: 500;
+    }
+
+    /* Security Info */
+    .security-info {
+        background: #f0f8f0;
+        padding: 1rem;
+        border-radius: 6px;
+        border-left: 4px solid #4CAF50;
+        color: #333;
+        font-size: 0.9rem;
+    }
+
+    .security-info p {
+        margin: 0;
+    }
+
+    /* Info Box */
+    .info-box {
+        background: #e3f2fd;
+        border-left: 4px solid #2196F3;
+        padding: 1.5rem;
+        border-radius: 6px;
+        margin-top: 2rem;
+    }
+
+    .info-box h3 {
+        color: #1565c0;
+        margin: 0 0 1rem 0;
+        font-size: 1.05rem;
+    }
+
+    .info-box ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .info-box li {
+        padding: 0.5rem 0;
+        color: #1565c0;
+        font-size: 0.95rem;
+    }
+
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 3rem;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .empty-state p {
+        color: #666;
+        font-size: 1.2rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .empty-state .btn {
+        display: inline-block;
+    }
+
+    /* Alerts */
+    .alert {
+        padding: 1rem;
+        border-radius: 6px;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .alert-error {
+        background: #ffebee;
+        color: #c62828;
+        border-left: 4px solid #c62828;
+    }
+
+    .alert-icon {
+        font-weight: 700;
+        font-size: 1.2rem;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 1024px) {
+        .checkout-wrapper {
+            grid-template-columns: 1fr;
+        }
+
+        .summary-card {
+            position: static;
+        }
+
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .checkout-container {
+            padding: 0 0.75rem;
+        }
+
+        .checkout-container>h1 {
+            font-size: 1.5rem;
+        }
+
+        .checkout-wrapper {
+            gap: 1rem;
+        }
+
+        .checkout-left,
+        .checkout-right {
+            gap: 1rem;
+        }
+
+        .checkout-section,
+        .summary-card {
+            padding: 1rem;
+        }
+
+        .checkout-section h2 {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .order-item {
+            padding: 0.75rem;
+        }
+
+        .item-info h4 {
+            font-size: 0.85rem;
+        }
+
+        .form-group input {
+            padding: 0.7rem;
+            font-size: 0.9rem;
+        }
+
+        .summary-total {
+            font-size: 1.1rem;
+        }
+
+        .btn {
+            padding: 0.65rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        .pay-btn {
+            font-size: 0.95rem;
+        }
+
+        .payment-methods-section {
+            padding: 0.75rem;
+        }
+
+        .payment-methods-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.5rem;
+        }
+
+        .method-icon {
+            font-size: 1.25rem;
+        }
+
+        .method-label {
+            font-size: 0.7rem;
+        }
+
+        .info-box {
+            padding: 1rem;
+        }
+
+        .info-box h3 {
+            font-size: 0.95rem;
+        }
+
+        .info-box li {
+            font-size: 0.85rem;
+            padding: 0.4rem 0;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .checkout-container>h1 {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .checkout-section,
+        .summary-card {
+            padding: 0.75rem;
+        }
+
+        .checkout-section h2 {
+            font-size: 0.95rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .order-item {
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .item-info {
+            flex: 1 1 100%;
+        }
+
+        .item-total {
+            flex: 1 1 100%;
+            text-align: left;
+        }
+
+        .form-group input {
+            padding: 0.6rem;
+            font-size: 0.85rem;
+        }
+
+        .summary-item {
+            font-size: 0.85rem;
+        }
+
+        .summary-total {
+            font-size: 1rem;
+        }
+
+        .btn {
+            padding: 0.6rem 0.75rem;
+            font-size: 0.85rem;
+        }
+
+        .payment-methods-section {
+            padding: 0.6rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .payment-methods-section h4 {
+            font-size: 0.8rem !important;
+            margin-bottom: 0.5rem !important;
+        }
+
+        .payment-methods-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.4rem;
+        }
+
+        .payment-method-item {
+            padding: 0.5rem;
+        }
+
+        .method-icon {
+            font-size: 1rem;
+            margin-bottom: 0.2rem;
+        }
+
+        .method-label {
+            font-size: 0.65rem;
+        }
+
+        .empty-state {
+            padding: 1.5rem;
+        }
+
+        .empty-state p {
+            font-size: 1rem;
+        }
+    }
+</style>
+
+<!-- Razorpay Script -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const razorpayBtn = document.getElementById('razorpayBtn');
+        if (razorpayBtn) {
+            razorpayBtn.addEventListener('click', function (e) {
+                e.preventDefault();
+                const form = document.getElementById('shippingForm');
+
+                // Validate form
+                if (!form.checkValidity()) {
+                    alert('Please fill in all required fields');
+                    form.reportValidity();
+                    return;
+                }
+
+                // Collect form data
+                const shippingData = {
+                    fullName: document.getElementById('fullName').value,
+                    email: document.getElementById('email').value,
+                    address: document.getElementById('address').value,
+                    city: document.getElementById('city').value,
+                    state: document.getElementById('state').value,
+                    zipcode: document.getElementById('zipcode').value,
+                    country: document.getElementById('country').value,
+                    phone: document.getElementById('phone').value
+                };
+
+                // Initiate Razorpay payment
+                fetch('{{ url_for("process_payment") }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(shippingData)
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.error) {
+                            alert('Error: ' + data.error);
+                            return;
+                        }
+
+                        const options = {
+                            key: data.razorpay_key_id,
+                            amount: data.amount,
+                            currency: "INR",   // IMPORTANT: INR shows maximum payment options
+                            order_id: data.order_id,
+
+                            name: "Our Store",
+                            description: "Order Payment",
+                            image: "{{ url_for('static', filename='images/logo.png') }}",
+
+                            // SHOW ALL METHODS
+                            method: {
+                                upi: true,
+                                card: true,
+                                netbanking: true,
+                                wallet: true,
+                                emi: true,
+                                paylater: true
+                            },
+
+                            // OPTIONAL: Show UPI first (most common in India)
+                            config: {
+                                display: {
+                                    blocks: {
+                                        upi: {
+                                            name: "Pay using UPI",
+                                            instruments: [
+                                                { method: "upi" }
+                                            ]
+                                        },
+                                        cards: {
+                                            name: "Pay using Cards",
+                                            instruments: [
+                                                { method: "card" }
+                                            ]
+                                        },
+                                        netbanking: {
+                                            name: "Netbanking",
+                                            instruments: [
+                                                { method: "netbanking" }
+                                            ]
+                                        },
+                                        wallets: {
+                                            name: "Wallets",
+                                            instruments: [
+                                                { method: "wallet" }
+                                            ]
+                                        },
+                                        paylater: {
+                                            name: "Pay Later",
+                                            instruments: [
+                                                { method: "paylater" }
+                                            ]
+                                        },
+                                        emi: {
+                                            name: "EMI",
+                                            instruments: [
+                                                { method: "emi" }
+                                            ]
+                                        }
+                                    },
+
+                                    sequence: ["block.upi", "block.cards", "block.netbanking", "block.wallets", "block.paylater", "block.emi"],
+                                    preferences: {
+                                        show_default_blocks: true
+                                    }
+                                }
+                            },
+
+                            handler: function (response) {
+
+                                fetch('{{ url_for("verify_payment") }}', {
+                                    method: "POST",
+                                    headers: {
+                                        "Content-Type": "application/json"
+                                    },
+                                    body: JSON.stringify({
+                                        razorpay_payment_id: response.razorpay_payment_id,
+                                        razorpay_order_id: response.razorpay_order_id,
+                                        razorpay_signature: response.razorpay_signature,
+                                        shipping_data: shippingData
+                                    })
+                                })
+                                    .then(res => res.json())
+                                    .then(result => {
+
+                                        if (result.success) {
+
+                                            // redirect to orders page
+                                            window.location.href = result.redirect_url;
+
+                                        } else {
+
+                                            alert("Payment verification failed");
+
+                                        }
+
+                                    })
+                                    .catch(err => {
+
+                                        console.log(err);
+                                        alert("Something went wrong");
+
+                                    });
+
+                            },
+
+                            prefill: {
+                                name: shippingData.fullName,
+                                email: shippingData.email,
+                                contact: shippingData.phone
+                            },
+
+                            theme: {
+                                color: "#4CAF50"
+                            }
+                        };
+
+                        const rzp = new Razorpay(options);
+                        rzp.open();
+                    })
+                    .catch(error => {
+                        alert('Error initiating payment: ' + error.message);
+                        console.error('Error:', error);
+                    });
+            });
+        }
+    });
+</script>
+{% endblock %}
