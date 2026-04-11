@@ -100,7 +100,7 @@ Veridian/
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/Dev-Mufaddal/AuthOra.git
+git clone https://github.com/Dev-Mufaddal/Veridian.git
 cd AuthOra
 ```
 
