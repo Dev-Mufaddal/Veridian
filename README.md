@@ -1,171 +1,206 @@
-# 🔐 Veridian
+# 🌿 Veridian
 
-Veridian is a secure and modern authentication system developed using Flask. It implements core user identity management features including registration, login, logout, and session handling, integrated with a MySQL (localhost) database for persistent storage.
+> **Verified Identity. Trusted Access. Seamless Commerce.**
 
-The application follows a structured backend architecture and includes a clean, responsive user interface, demonstrating best practices in authentication workflows, database connectivity, and modular Flask development.
+Veridian is a secure, full-stack web application built with Flask, combining robust user authentication with a complete e-commerce experience. From registration to checkout, Veridian ensures every interaction is protected, validated, and seamless.
+
+---
+
+## 📌 Overview
+
+Veridian was designed to demonstrate end-to-end implementation of authentication workflows integrated with a fully functional shopping platform. It features a clean admin interface, secure user flows, and real payment processing — all built on a modular, maintainable Flask architecture.
+
+Whether you're a developer exploring auth systems or looking for a reference implementation of a Flask-based e-commerce app, Veridian provides a solid, production-minded foundation.
 
 ---
 
 ## 🚀 Key Features
 
-### 👤 User Features
+### 👤 User Authentication
+- Secure registration and login system
+- Password hashing using industry-standard algorithms
+- Session management with Flask
+- Client-side and server-side form validation
+- Alert feedback for login errors, success, and validation issues
+- Protected routes for authenticated users only
 
-- Secure user registration system
-- User login and logout authentication
-- Session management using Flask
-- Password hashing for secure credential storage
-- Alert messages for login success, errors, and validation feedback
-- Client-side validation using JavaScript
-- Responsive and clean user interface
-- Dynamic HTML rendering using Jinja2 templates
-- MySQL (localhost) database integration
+### 🛒 E-Commerce
+- Product listing and browsing
+- Shopping cart with dynamic item management
+- Checkout flow with **Razorpay** payment integration
+- Order history and tracking per user
 
-### 🛠️ System Features
+### 🛠️ Admin Dashboard
+- User management (view, edit)
+- Product management (add, edit, delete)
+- Centralized admin control panel
 
-- Structured Flask backend architecture
-- CRUD operations for user data
-- Server-side form validation
-- Secure database queries using parameterized statements
-- Modular and scalable template structure
-- Organized static assets (CSS, JavaScript, images)
-- Error handling and input validation
-- Lightweight and maintainable authentication workflow
+### ⚙️ System & Architecture
+- Modular Flask backend with clean route separation
+- Parameterized SQL queries to prevent injection attacks
+- Jinja2 templating for dynamic HTML rendering
+- Responsive UI with Bootstrap 5
+- Organized static assets (CSS, JS, images)
+- Structured error handling (404, 500 pages)
 
 ---
 
 ## 🛠️ Tech Stack
 
-| Technology            | Purpose                                                               |
-| --------------------- | --------------------------------------------------------------------- |
-| **Python**            | Core backend programming language                                     |
-| **Flask**             | Lightweight web framework for handling routes and server logic        |
-| **MySQL (localhost)** | Relational database for storing user credentials and application data |
-| **HTML5**             | Structuring web page content                                          |
-| **CSS3**              | Styling and layout design                                             |
-| **Bootstrap**         | Responsive and mobile-first UI components                             |
-| **JavaScript**        | Client-side interactivity, validation, and dynamic behaviour          |
-| **Jinja2**            | Template engine for rendering dynamic HTML                            |
+| Technology     | Purpose                                              |
+|----------------|------------------------------------------------------|
+| **Python**     | Core backend language                                |
+| **Flask**      | Web framework — routing, sessions, server logic      |
+| **MySQL**      | Relational database for users, products, orders      |
+| **Jinja2**     | Server-side HTML templating                          |
+| **Bootstrap 5**| Responsive, mobile-first UI components               |
+| **JavaScript** | Client-side validation and interactivity             |
+| **HTML5/CSS3** | Page structure and custom styling                    |
+| **Razorpay**   | Payment gateway integration                          |
 
 ---
 
 ## 📂 Project Structure
 
-```bash
-
-AuthOra/
+```
+Veridian/
 ├── static/
-│   ├── css/
-│   ├── js/
-│   └── images/
+│   ├── css/               # Custom stylesheets
+│   ├── js/                # Client-side scripts
+│   └── images/            # Static image assets
 │
 ├── templates/
-│   ├── 404.html
-│   ├── 500.html
+│   ├── base.html          # Base layout template
+│   ├── login.html         # Login page
+│   ├── register.html      # Registration page
+│   ├── dashboard.html     # User dashboard
+│   ├── products.html      # Product listing
+│   ├── cart.html          # Shopping cart
+│   ├── checkout.html      # Checkout & payment
+│   ├── order_history.html # Order history
 │   ├── admin_dashboard.html
+│   ├── admin_products.html
 │   ├── admin_products_add.html
 │   ├── admin_products_edit.html
-│   ├── admin_products.html
-│   ├── admin_users_edit.html
 │   ├── admin_users.html
-│   ├── base.html
-│   ├── cart.html
-│   ├── checkout.html
-│   ├── dashboard.html
-│   └── login.html
-│   └── order_history.html
-│   └── products.html
-│   └── register.html
+│   ├── admin_users_edit.html
+│   ├── 404.html
+│   └── 500.html
 │
-├── app.py
-├── config.py
-├── requirements.txt
+├── app.py                 # Application entry point & routes
+├── config.py              # Configuration settings
+├── requirements.txt       # Python dependencies
 └── README.md
-
 ```
 
 ---
 
-## ⚙️ Installation
+## ⚙️ Installation & Setup
 
-### Clone repo
+### 1. Clone the Repository
+
 ```bash
-git clone https://github.com/Dev-Mufaddal/AuthOra.git  
+git clone https://github.com/Dev-Mufaddal/AuthOra.git
 cd AuthOra
-```  
+```
 
-### Create virtual environment
+### 2. Create a Virtual Environment
+
 ```bash
 python -m venv venv
-```  
+```
 
-### Activate (Windows)
+### 3. Activate the Virtual Environment
+
+**Windows:**
 ```bash
 venv\Scripts\activate
 ```
 
-### Activate (Mac/Linux)
+**macOS / Linux:**
 ```bash
 source venv/bin/activate
 ```
 
-### Install dependencies
+### 4. Install Dependencies
+
 ```bash
 pip install -r requirements.txt
 ```
 
-### Run app
+### 5. Configure the Database
+
+- Ensure MySQL is running locally.
+- Update `config.py` with your MySQL credentials and database name.
+- Create the required tables by running the app or executing your schema SQL.
+
+### 6. Run the Application
+
 ```bash
-python app.py  
+python app.py
 ```
 
----
-
-## 🌐 Routes
-
-- / → Home
-- /login → Login Page
-- /register → Register Page
-- /dashboard → Protected Dashboard
-- /shop → Products Page
-- /cart → Added Products diplays to Cart
-- /checkout → Payment Integration using RazorPay
-- /orders → Displays your Orders on this page
-- /logout → Logout
+Visit `http://localhost:5000` in your browser.
 
 ---
 
-## 🔒 Security
+## 🌐 Application Routes
 
-- Password hashing
-- Session authentication
-- Protected routes
-
----
-
-## 📈 Learning Objectives
-
-This project demonstrates understanding of:
-
-- Flask routing & application structure
-- Authentication workflow design
-- Database connectivity with MySQL
-- Session handling in Flask
-- Responsive frontend integration
-- Modular and maintainable code structure
+| Route        | Description                          | Access        |
+|--------------|--------------------------------------|---------------|
+| `/`          | Home page                            | Public        |
+| `/register`  | User registration                    | Public        |
+| `/login`     | User login                           | Public        |
+| `/dashboard` | User dashboard                       | Authenticated |
+| `/shop`      | Browse products                      | Authenticated |
+| `/cart`      | View and manage cart                 | Authenticated |
+| `/checkout`  | Checkout with Razorpay payment       | Authenticated |
+| `/orders`    | View order history                   | Authenticated |
+| `/logout`    | End session and log out              | Authenticated |
+| `/admin`     | Admin control panel                  | Admin only    |
 
 ---
 
-## 📈 Future Improvements
+## 🔒 Security Practices
 
-- Email verification
-- Password reset
+- **Password Hashing** — Passwords are never stored in plain text.
+- **Session Authentication** — Flask sessions protect access to sensitive routes.
+- **Parameterized Queries** — All database interactions use parameterized statements to prevent SQL injection.
+- **Route Protection** — Unauthenticated users are redirected away from protected pages.
+- **Input Validation** — Both client-side (JS) and server-side (Flask) validation in place.
+
+---
+
+## 📈 Roadmap & Future Improvements
+
+- [ ] Email verification on registration
+- [ ] Password reset via email
+- [ ] OAuth2 / social login (Google, GitHub)
+- [ ] JWT-based API authentication
+- [ ] Product search and filtering
+- [ ] Inventory management in admin panel
+- [ ] Deployment guide (Docker / cloud)
+
+---
+
+## 🎯 Learning Objectives
+
+This project demonstrates practical understanding of:
+
+- Flask application architecture and routing
+- Authentication workflow design and security best practices
+- MySQL database integration with Python
+- Session handling and protected route patterns
+- Responsive frontend development with Bootstrap
+- Payment gateway integration (Razorpay)
+- Modular, scalable project structure
 
 ---
 
 ## 👨‍💻 Author
 
-Mufaddal Kanchwala  
-GitHub: https://github.com/Dev-Mufaddal
+**Mufaddal Kanchwala**
+GitHub: [@Dev-Mufaddal](https://github.com/Dev-Mufaddal)
 
 ---
 
@@ -175,4 +210,4 @@ This project is created for educational and portfolio purposes.
 
 ---
 
-⭐ Star this repo if you like it!
+⭐ If you found this project useful or interesting, consider starring the repository!
