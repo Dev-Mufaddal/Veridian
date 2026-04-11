@@ -1,6 +1,6 @@
-# 🔐 AuthOra
+# 🔐 Veridian
 
-AuthOra is a secure and modern authentication system developed using Flask. It implements core user identity management features including registration, login, logout, and session handling, integrated with a MySQL (localhost) database for persistent storage.
+Veridian is a secure and modern authentication system developed using Flask. It implements core user identity management features including registration, login, logout, and session handling, integrated with a MySQL (localhost) database for persistent storage.
 
 The application follows a structured backend architecture and includes a clean, responsive user interface, demonstrating best practices in authentication workflows, database connectivity, and modular Flask development.
 
