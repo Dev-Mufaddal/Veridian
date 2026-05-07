@@ -1,44 +1,29 @@
 # ======================================
-# DATABASE CONFIGURATION FILE
+# DATABASE CONFIGURATION FILE - MONGODB
 # ======================================
-# This file contains all database credentials
-# Change these values according to your MySQL setup
+# This file contains MongoDB credentials and connection settings
 
-import mysql.connector
-from mysql.connector import Error
+from pymongo import MongoClient
 
-# DATABASE CREDENTIALS - Update these with your MySQL credentials
-DB_HOST = "localhost"        # MySQL server address (usually localhost)
-DB_USER = "root"             # MySQL username
-DB_PASSWORD = "root"         # MySQL password
-DB_NAME = "flask_auth_db"    # Database name
+# MONGODB CONNECTION STRING
+# Update with your MongoDB connection string
+MONGODB_URI = "mongodb+srv://mufaddalabbaskanchwala99_db_user:Y87BEVtviIx5ZPGj@cluster0.bprreem.mongodb.net/?appName=Cluster0"
+DB_NAME = "veridian"
 
-# Function to establish database connection
-def get_db_connection():
-    """
-    Creates and returns a connection to the MySQL database
-    This function is called whenever we need to interact with the database
-    """
-    try:
-        connection = mysql.connector.connect(
-            host=DB_HOST,
-            user=DB_USER,
-            password=DB_PASSWORD,
-            database=DB_NAME
-        )
-        if connection.is_connected():
-            print("✓ Successfully connected to MySQL database")
-            return connection
-    except Error as e:
-        print(f"✗ Error while connecting to MySQL: {e}")
-        return None
+# Initialize MongoDB client and database
+client = MongoClient(MONGODB_URI)
+db = client[DB_NAME]
 
-# Function to close database connection
-def close_db_connection(connection):
-    """
-    Safely closes the database connection
-    Always call this after finishing database operations
-    """
-    if connection and connection.is_connected():
-        connection.close()
-        print("✓ Database connection closed")
+# Database collections
+users = db["users"]
+products = db["products"]
+cart = db["cart"]
+orders = db["orders"]
+order_items = db["order_items"]
+
+# ======================================
+# RAZORPAY PAYMENT GATEWAY CONFIGURATION
+# ======================================
+# Get these from: https://dashboard.razorpay.com/app/keys
+RAZORPAY_KEY_ID = "rzp_test_SaGwdxC2nNrJHg"        # Replace with your API key
+RAZORPAY_KEY_SECRET = "E0wo3EELRQ6U64QVFx0eL8T6"   # Replace with your API secret
